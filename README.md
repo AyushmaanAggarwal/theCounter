@@ -19,4 +19,7 @@ pip install -e .
 ```
 
 To run application, run
-
+```sh
+cd theCounter
+flask --app main run
+```
