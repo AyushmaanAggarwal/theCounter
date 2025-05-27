@@ -20,58 +20,17 @@
 
       pkgs = nixpkgs.legacyPackages.${system};
       python = pkgs.python3;
-      attrs = project.renderers.buildPythonPackage { inherit python; };
+      attrs-build = project.renderers.buildPythonPackage { inherit python; };
+      attrs-shell = project.renderers.withPackages { inherit python; };
+      pythonEnv = python.withPackages attrs-shell;
 
     in
     {
-      # Build our package using `buildPythonPackage
-      packages.${system}.default =
-        # Pass attributes to buildPythonPackage.
-        # Here is a good spot to add on any missing or custom attributes.
-        python.pkgs.buildPythonPackage (attrs // {
-          dependencies = [ 
-            pkgs.python312Packages.flask
-          ];
-          env.CUSTOM_ENVVAR = "hello";
-        });
+      devShells.${system}.default =
+        pkgs.mkShell { packages = [ pythonEnv ]; };
 
+      # packages.${system}.default = 
+      #   python.pkgs.buildPythonPackage ( attrs-build );
         
-        systemd.services.gunicorn = {
-          enable = true;
-          description = "gunicorn daemon";
-          # In NixOS, you refer to dependencies by name without the suffix.
-          requires = [ "gunicorn.socket" ];
-          after = [ "network.target" ];
-          serviceConfig = {
-            Type = "notify";
-            NotifyAccess = "main";
-            User = "counter";
-            Group = "counter";
-            DynamicUser = true;
-            RuntimeDirectory = "gunicorn";
-            WorkingDirectory = "/home/proxmox/theCounter";
-            ExecStart = "/usr/bin/gunicorn applicationname.wsgi";
-            ExecReload = "/bin/kill -s HUP $MAINPID";
-            KillMode = "mixed";
-            TimeoutStopSec = "5";
-            PrivateTmp = true;
-            ProtectSystem = "strict";
-          };
-          wantedBy = [ "multi-user.target" ];
-        };
-      
-        # Define the gunicorn socket unit
-        systemd.sockets.gunicorn = {
-          enable = true;
-          description = "gunicorn socket";
-          # Listen on a Unix socket
-          listenStream = "/run/gunicorn.sock";
-          socketConfig = {
-            SocketUser = "www-data";
-            SocketGroup = "www-data";
-            SocketMode = "0660";
-          };
-          wantedBy = [ "sockets.target" ];
-        };
     };
 }

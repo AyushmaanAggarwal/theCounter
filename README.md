@@ -12,3 +12,11 @@
 - Keep track of how late everyone is to the 8am class
 - Plan events to the city and other locations instead of spreadsheets
 
+## Setup
+To install dependencies, run 
+```sh
+pip install -e .
+```
+
+To run application, run
+
