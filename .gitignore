@@ -7,6 +7,7 @@ emails/*.json
 emails/__pycache__/
 booksandmovies/__pycache__
 migrations/
+result
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

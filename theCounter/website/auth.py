@@ -1,4 +1,4 @@
-import time, re
+import time, re, os
 
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User
@@ -9,8 +9,8 @@ import random
 from emails.sendVerification import *
 
 auth = Blueprint('auth', __name__)
-allowBypassCode = True
-
+# Check if using in production
+allowBypassCode = not "gunicorn" in os.environ.get('SERVER_SOFTWARE', '')
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -48,7 +48,7 @@ def sign_up():
         username = request.form.get('username')
         email = request.form.get('email')
         email_auth = str(round(random.uniform(100000, 999999)))
-        email_auth_hash = generate_password_hash(email_auth, method='sha256')
+        email_auth_hash = generate_password_hash(email_auth, method='scrypt')
         email_auth_exp = time.time() + 24 * 3600
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
@@ -69,7 +69,7 @@ def sign_up():
         else:
             new_user = User(fullName=full_name, username=username, email=email, emailauth=email_auth_hash,
                             emailauthexp=email_auth_exp,
-                            emailauthattempts=0, password=generate_password_hash(password1, method='sha256'))
+                            emailauthattempts=0, password=generate_password_hash(password1, method='scrypt'))
             db.session.add(new_user)
             db.session.commit()
             if not send_verification_email(email, username, email_auth):
@@ -121,7 +121,7 @@ def resend_verification_code():
         else:
             new_auth = str(round(random.uniform(100000, 999999)))
             if request.form.get("passwordReset"):
-                user.resetpassword = generate_password_hash(new_auth, method='sha256')
+                user.resetpassword = generate_password_hash(new_auth, method='scrypt')
                 user.resetpasswordexp = time.time() + 24 * 3600
                 user.emailauthattempts = 0
                 if not send_password_reset(user.email, user.username, new_auth):
@@ -134,7 +134,7 @@ def resend_verification_code():
                 flash('Already verified email.', category='success')
                 return redirect(url_for('views.home'))
 
-            user.emailauth = generate_password_hash(new_auth, method='sha256')
+            user.emailauth = generate_password_hash(new_auth, method='scrypt')
             user.emailauthexp = time.time() + 24 * 3600
             user.emailauthattempts = 0
             if send_verification_email(user.email, user.username, new_auth):
@@ -155,7 +155,7 @@ def reset_password():
         token = request.form.get('verifyCode')
         user = User.query.filter_by(email=email_address).first()
         if check_reset_password(user, password, password2, token):
-            user.password = generate_password_hash(password, 'sha256')
+            user.password = generate_password_hash(password, 'scrypt')
             db.session.commit()
             flash('Password reset!', category='success')
             login_user(user, remember=True)
@@ -172,7 +172,7 @@ def reset_password_link(token):
 
         user = User.query.filter_by(email=email_address).first()
         if check_reset_password(user, password, password2, token):
-            user.password = generate_password_hash(password, 'sha256')
+            user.password = generate_password_hash(password, 'scrypt')
             db.session.commit()
             flash('Password reset!', category='success')
             login_user(user, remember=True)

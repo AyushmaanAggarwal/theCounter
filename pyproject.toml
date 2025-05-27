@@ -1,0 +1,31 @@
+[project]
+name = "theCounter"
+version = "1.0.0"
+description = "theCounter Website"
+readme = "README.md"
+
+# define any Python dependencies
+requires-python = ">= 3.12"
+dependencies = [
+  "Flask>=3.1.0",
+  "Flask-Login>=0.6.3",
+  "Flask-SQLAlchemy>=3.0.2",
+  "Flask-WTF>=1.2.0",
+  "Flask-Admin>=1.6.0",
+  "Flask-Migrate>= 4.0.0",
+
+  "apscheduler>=3.11.0",
+  "requests>=2.32.0",
+  "gunicorn>=23.0.0",
+  "SQLAlchemy>=2.0.0",
+
+  "google-api-python-client>=2.170.0",
+  "google-auth-oauthlib>=1.2.0",
+  "google-auth-httplib2>=0.2.0"
+]
+# define the CLI executable
+# Here, we define the entry point to be the 'main()' function in the module 'app/main.py'
+[project.scripts]
+theCounter = "app.main"
+cli = "app.main:main"
+gunicorn = "gunicorn.app.main:main"
