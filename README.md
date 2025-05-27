@@ -1,8 +1,5 @@
-> Announcement:
+> [!NOTE]  
 > If you are new, checkout the [onboarding document](./ONBOARDING.md) for how to set up the environment
-
-> Heads Up:
-> You can ignore all the files that end with .sh or .nix, they are used in order to run the server
 
 # The Counter
 ## Features

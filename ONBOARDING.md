@@ -1,4 +1,7 @@
 # Onboarding to the Physicsquad Website!
+> [!TIP]
+> The main website development occurs inside `theCounter` folder. You can ignore all the files that end with .lock or .nix, they are used in order to run the server
+
 
 ## Branch Explanation 
 Each person has a personal branch with their first name, lowercase. This is meant for making experimental changes to your version of the code. 
