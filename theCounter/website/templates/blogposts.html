@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Blogposts{% endblock %}
+
+{% block content %}
+    <br><br>
+    <div class="card p-4 p-md-5 mb-4 rounded text-bg-dark">
+        <h1>Blogposts</h1>
+        <p class="lead my-3">See what others have been up to and share your updates.</p>
+    </div>
+    <br>
+    {% if blogposts %}
+        <h1 align="center">All Posts</h1>
+        <div class="table-responsive">
+            <table class="table lowz">
+                <thead class="thead-dark">
+                <tr>
+                    <th class="col-2" scope="col">Author</th>
+                    <th class="col-2" scope="col">Title</th>
+                    <th class="col-3" scope="col">Summary</th>
+                    <th class="col-1" scope="col">Date</th>
+                    <th class="col-1" scope="col">URL</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for blogpost in blogposts %}
+                    <tr class="align-items-center">
+                        <!-- Add fields here -->
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <h1 align="center">No Posts Yet</h1>
+    {% endif %}
+    <div class="fixed">
+        <a href="/add-blogpost">
+            <button class="btn btn-outline-secondary whitebg">Add A Post</button>
+        </a>
+    </div>
+
+    <br><br>
+{% endblock %}

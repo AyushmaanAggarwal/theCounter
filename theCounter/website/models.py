@@ -15,6 +15,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     testlevel = db.Column(db.String(10))
     createdBooks = db.relationship('Book')
+    blogPosts = db.relationship("Blogpost", back_populates="user",
+                              lazy='subquery', cascade='all, delete-orphan')
 
 
 class Counter(db.Model):
@@ -85,3 +87,17 @@ class Event(db.Model):
     date = db.Column(db.Date())
     time = db.Column(db.Time())
     description = db.Column(db.String(500))
+
+class Blogpost(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50))
+    summary = db.Column(db.String(150))
+    description = db.Column(db.String(400))
+    date_time_published = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+    user = db.relationship("User", back_populates="blogPosts")
+
+    @staticmethod
+    def get_from_id(num):
+        return Blogpost.query.filter_by(id=num).first()
+    

@@ -42,12 +42,14 @@ def create_app():
     from .views import views
     from .auth import auth
     from .lateness import late
+    from .blogposts import blogposts
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(late, url_prefix='/')
+    app.register_blueprint(blogposts, url_prefix='/')
 
-    from .models import User, Counter, Movie, Book, Lateness, Event, Announcement
+    from .models import User, Counter, Movie, Book, Lateness, Event, Announcement, Blogpost
 
     admin.add_view(MyView(User, db.session))
     admin.add_view(MyView(Counter, db.session))
@@ -56,6 +58,7 @@ def create_app():
     admin.add_view(MyView(Lateness, db.session))
     admin.add_view(MyView(Event, db.session))
     admin.add_view(MyView(Announcement, db.session))
+    admin.add_view(MyView(Blogpost, db.session))
     migrate = Migrate(app, db, render_as_batch=True)
     create_database(app)
 

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}New Blogpost{% endblock %}
+
+{% block content %}
+    <form method="POST">
+        <h1 align="center">Make New Event</h1>
+        <div class="form-group">
+            <label for="blogTitle">Title</label>
+            <input
+                type="text"
+                class="form-control"
+                id="blogTitle"
+                name="blogTitle"
+                placeholder="Enter a title for your post"
+            />
+        </div>
+        <div class="form-group">
+            <label for="blogSummary">Summary</label>
+            <input
+                type="text"
+                class="form-control"
+                id="blogSummary"
+                name="blogSummary"
+                placeholder="Enter a summary"
+            />
+        </div>
+        <div class="form-group">
+            <label for="blogDescription">Description</label>
+            <input
+                type="text"
+                class="form-control"
+                id="blogDescription"
+                name="blogDescription"
+                placeholder="Enter a description of your update. Feel free to use HTML or Markup."
+            />
+        </div>
+        <div class="form-group">
+            <label for="blogPictures">Pictures</label>
+            <input
+                type="file"
+                class="form-control"
+                id="blogPictures"
+                name="blogPictures"
+                accept="image/png, image/jpeg"
+            />
+        </div>
+        <br/>
+        <button type="submit" class="btn btn-primary">Add</button>
+        <button onclick="window.location.href='/blogposts'" class="btn btn-primary">Cancel</button>
+    </form>
+{% endblock %}
