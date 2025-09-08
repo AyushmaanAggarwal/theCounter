@@ -47,6 +47,7 @@ def new_counter():
 
 
 @views.route('/increase-counter', methods=['POST'])
+@login_required
 def increase_counter():
     counter = json.loads(request.data)
     counterId = counter['counterId']
@@ -62,6 +63,7 @@ def increase_counter():
 
 
 @views.route('/delete-counter', methods=['POST'])
+@login_required
 def delete_counter():
     counter = json.loads(request.data)
     counterId = counter['counterId']
@@ -108,6 +110,7 @@ def add_movie():
 
 
 @views.route('/like-movie', methods=['POST'])
+@login_required
 def like_movie():
     movie = json.loads(request.data)
     movieId = movie['movieId']
@@ -130,10 +133,14 @@ def books():
     books = Book.query.order_by(Book.likes.desc()).all()
     pastBooks = any([book.bookTitle[0] == '.' for book in books])
     currentBooks = any([book.bookTitle[0] == '_' for book in books])
-    bookClubAnnouncement = Announcement.query.filter_by(type="book club").order_by(
-        Announcement.post_date.desc()).first().description
-    dateAnnouncement = Announcement.query.filter_by(type="book club").order_by(
-        Announcement.post_date.desc()).first().post_date.strftime("%b %d, %Y")
+    announcement = Announcement.query.filter_by(type="book club").order_by(
+        Announcement.post_date.desc()).first()
+    if announcement is None:
+        bookClubAnnouncement = ""
+        dateAnnouncement = ""
+    else:
+        bookClubAnnouncement = announcement.description
+        dateAnnouncement = announcement.post_date.strftime("%b %d, %Y")
     return render_template("books.html", user=current_user, books=books, get_book_cover=get_book_cover, load=json.loads,
                            pastBooks=pastBooks, currentBooks=currentBooks, announcement=bookClubAnnouncement,
                            date=dateAnnouncement)
@@ -162,6 +169,7 @@ def add_book():
 
 
 @views.route('/like-book', methods=['POST'])
+@login_required
 def like_book():
     book = json.loads(request.data)
     bookId = book['bookId']
@@ -195,6 +203,7 @@ def sort_by_datetime(object_to_compare):
 
 
 @views.route('/events', methods=['GET', 'POST'])
+@login_required
 def events():
     events_ = sorted(Event.query.all(), key=sort_by_datetime)
     today_events = sorted(Event.query.filter_by(date=date.today()).all(), key=sort_by_datetime)
@@ -206,6 +215,7 @@ def events():
 
 
 @views.route('/add-event', methods=['GET', 'POST'])
+@login_required
 def add_event():
     if request.method == 'POST':
         title = request.form.get('eventTitle')
